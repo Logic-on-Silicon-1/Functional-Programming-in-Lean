@@ -73,3 +73,14 @@ Functional Programming in Lean의 Markdown 파일 목록입니다.
 | 67  |                                                                                                                    | [8.7. Special Types](./markdown/Special-Types.md)                                                               |
 | 68  |                                                                                                                    | [8.8. Summary](./markdown/Summary.md)                                                                           |
 | 69  | [9. Next Steps](./markdown/Next-Steps.md)                                                                          |                                                                                                                 |
+
+---
+
+## 👥 번역 멤버
+
+|     | **Name(ㄱ-ㅎ)** |     |
+| :-: | :-----------: | :-: |
+|  1  |      김영준      |  -  |
+|  2  |     (멤버명)     |  -  |
+|  3  |     (멤버명)     |  -  |
+|  4  |     (멤버명)     |  -  |
