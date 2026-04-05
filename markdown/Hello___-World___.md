@@ -9,9 +9,16 @@ Source: https://lean-lang.org/functional_programming_in_lean/Hello___-World___
 While Lean has been designed to have a rich interactive environment in which programmers can get quite a lot of feedback from the language without leaving the confines of their favorite text editor, it is also a language in which real programs can be written.
 This means that it also has a batch-mode compiler, a build system, a package manager, and all the other tools that are necessary for writing programs.
 
+Lean은 프로그래머들이 자신이 선호하는 텍스트 에디터에서 벗어나지 않고도 언어로부터 많은 피드백을 얻을 수 있는 풍부한 대화형 환경을 갖도록 설계되었을 뿐만 아니라, 실제 프로그램을 작성할 수 있는 언어이기도 합니다.
+이는 Lean이 배치 모드 컴파일러, 빌드 시스템, 패키지 관리자, 그리고 프로그램을 작성하는 데 필요한 다른 모든 도구들을 갖추고 있다는 의미입니다.
+
 While the [previous chapter](Getting-to-Know-Lean/#getting-to-know) presented the basics of functional programming in Lean, this chapter explains how to start a programming project, compile it, and run the result.
 Programs that run and interact with their environment (e.g. by reading input from standard input or creating files) are difficult to reconcile with the understanding of computation as the evaluation of mathematical expressions.
 In addition to a description of the Lean build tools, this chapter also provides a way to think about functional programs that interact with the world.
+
+[이전 장](Getting-to-Know-Lean/#getting-to-know)은 Lean의 함수형 프로그래밍의 기초를 다루었지만, 이 장은 프로그래밍 프로젝트를 시작하고, 컴파일하고, 결과를 실행하는 방법을 설명합니다.
+환경과 상호작용하는 프로그램(예: 표준 입력에서 입력을 읽거나 파일을 생성하는 프로그램)은 계산을 수학 식의 평가로 이해하는 것과 조화시키기 어렵습니다.
+Lean 빌드 도구에 대한 설명 외에도, 이 장은 세계와 상호작용하는 함수형 프로그램을 생각하는 방법을 제시합니다.
 
 1. [2.1. Running a Program](Hello___-World___/Running-a-Program/#running-a-program)
 2. [2.2. Step By Step](Hello___-World___/Step-By-Step/#step-by-step)
