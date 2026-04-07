@@ -176,46 +176,91 @@ Emacs에서는 해당 문자에 포인트를 두고 `C-c C-k`를 사용합니다
 
 The book has been updated to the latest stable Lean release (version 4.23.0), and now describes functional induction and the `grind` tactic.
 
+2025년 10월
+
+이 책은 최신 안정 Lean 릴리스(버전 4.23.0)로 업데이트되었으며, 이제 함수형 귀납법과 `grind` tactic을 설명합니다.
+
 ### August, 2025
 
 This is a maintenance release to resolve an issue with copy-pasting code from the book.
+
+2025년 8월
+
+이것은 책에서 코드를 복사-붙여넣기할 때의 문제를 해결하기 위한 유지보수 릴리스입니다.
 
 ### July, 2025
 
 The book has been updated for version 4.21 of Lean.
 
+2025년 7월
+
+이 책은 Lean 버전 4.21에 맞게 업데이트되었습니다.
+
 ### June, 2025
 
 The book has been reformatted with Verso.
+
+2025년 6월
+
+이 책은 Verso로 재포맷되었습니다.
 
 ### April, 2025
 
 The book has been extensively updated and now describes Lean version 4.18.
 
+2025년 4월
+
+이 책은 광범위하게 업데이트되었으며 이제 Lean 버전 4.18을 설명합니다.
+
 ### January, 2024
 
 This is a minor bugfix release that fixes a regression in an example program.
+
+2024년 1월
+
+이것은 예제 프로그램의 회귀를 수정하는 마이너 버그픽스 릴리스입니다.
 
 ### October, 2023
 
 In this first maintenance release, a number of smaller issues were fixed and the text was brought up to date with the latest release of Lean.
 
+2023년 10월
+
+이 첫 유지보수 릴리스에서 여러 작은 문제가 수정되었고, 텍스트는 Lean의 최신 릴리스에 맞게 업데이트되었습니다.
+
 ### May, 2023
 
 The book is now complete! Compared to the April pre-release, many small details have been improved and minor mistakes have been fixed.
+
+2023년 5월
+
+이 책이 이제 완성되었습니다! 4월 사전 릴리스에 비해 많은 작은 세부 사항이 개선되었고 사소한 실수가 수정되었습니다.
 
 ### April, 2023
 
 This release adds an interlude on writing proofs with tactics as well as a final chapter that combines discussion of performance and cost models with proofs of termination and program equivalence.
 This is the last release prior to the final release.
 
+2023년 4월
+
+이 릴리스는 tactic으로 증명을 작성하는 것에 대한 interlude와 성능 및 비용 모델에 대한 논의를 종료 증명 및 프로그램 동치성 증명과 결합하는 최종 장을 추가합니다.
+이것은 최종 릴리스 이전의 마지막 릴리스입니다.
+
 ### March, 2023
 
 This release adds a chapter on programming with dependent types and indexed families.
 
+2023년 3월
+
+이 릴리스는 종속 타입과 인덱스 패밀리를 사용한 프로그래밍에 대한 장을 추가합니다.
+
 ### January, 2023
 
 This release adds a chapter on monad transformers that includes a description of the imperative features that are available in `do`-notation.
+
+2023년 1월
+
+이 릴리스는 `do`-notation에서 사용 가능한 명령형 기능에 대한 설명을 포함하는 monad transformer에 대한 장을 추가합니다.
 
 ### December, 2022
 
@@ -223,29 +268,59 @@ This release adds a chapter on applicative functors that additionally describes 
 This is accompanied with improvements to the description of monads.
 The December 2022 release was delayed until January 2023 due to winter holidays.
 
+2022년 12월
+
+이 릴리스는 구조와 타입 클래스를 더 자세히 설명하는 applicative functor에 대한 장을 추가합니다.
+이는 monad의 설명 개선과 함께 제공됩니다.
+2022년 12월 릴리스는 겨울 휴일로 인해 2023년 1월까지 연기되었습니다.
+
 ### November, 2022
 
 This release adds a chapter on programming with monads. Additionally, the example of using JSON in the coercions section has been updated to include the complete code.
+
+2022년 11월
+
+이 릴리스는 monad를 사용한 프로그래밍에 대한 장을 추가합니다. 또한, coercion 섹션의 JSON 사용 예제가 완전한 코드를 포함하도록 업데이트되었습니다.
 
 ### October, 2022
 
 This release completes the chapter on type classes. In addition, a short interlude introducing propositions, proofs, and tactics has been added just before the chapter on type classes, because a small amount of familiarity with the concepts helps to understand some of the standard library type classes.
 
+2022년 10월
+
+이 릴리스는 타입 클래스에 대한 장을 완성합니다. 또한, 명제, 증명, tactic을 소개하는 짧은 interlude가 타입 클래스 장 바로 앞에 추가되었습니다. 이 개념에 대한 약간의 친숙함이 표준 라이브러리 타입 클래스 중 일부를 이해하는 데 도움이 되기 때문입니다.
+
 ### September, 2022
 
 This release adds the first half of a chapter on type classes, which are Lean's mechanism for overloading operators and an important means of organizing code and structuring libraries. Additionally, the second chapter has been updated to account for changes in Lean's stream API.
+
+2022년 9월
+
+이 릴리스는 Lean의 연산자 오버로딩 메커니즘이자 코드 구성 및 라이브러리 구조화의 중요한 수단인 타입 클래스에 대한 장의 첫 절반을 추가합니다. 또한, 두 번째 장은 Lean의 stream API의 변경 사항을 반영하도록 업데이트되었습니다.
 
 ### August, 2022
 
 This third public release adds a second chapter, which describes compiling and running programs along with Lean's model for side effects.
 
+2022년 8월
+
+이 세 번째 공개 릴리스는 프로그램 컴파일 및 실행과 Lean의 부작용 모델을 설명하는 두 번째 장을 추가합니다.
+
 ### July, 2022
 
 The second public release completes the first chapter.
 
+2022년 7월
+
+두 번째 공개 릴리스는 첫 번째 장을 완성합니다.
+
 ### June, 2022
 
 This was the first public release, consisting of an introduction and part of the first chapter.
+
+2022년 6월
+
+이것은 소개와 첫 번째 장의 일부로 구성된 첫 공개 릴리스였습니다.
 
 ## About the Author[🔗](find/?domain=Verso.Genre.Manual.section&name=about-the-author "Permalink")
 
