@@ -4,19 +4,28 @@ Source: https://lean-lang.org/functional_programming_in_lean/Interlude___-Propos
 
 # Interlude: Propositions, Proofs, and Indexing[🔗](find/?domain=Verso.Genre.Manual.section&name=props-proofs-indexing "Permalink")
 
+# 간주곡: 명제, 증명, 그리고 인덱싱
+
 Like many languages, Lean uses square brackets for indexing into arrays and lists.
 For instance, if `woodlandCritters` is defined as follows:
+
+많은 프로그래밍 언어처럼 Lean은 배열과 리스트에 접근할 때 대괄호를 사용합니다.
+예를 들어, `woodlandCritters`가 다음과 같이 정의되어 있다면:
 
 `def woodlandCritters : List String :=
 ["hedgehog", "deer", "snail"]`
 
 then the individual components can be extracted:
 
+그러면 각 구성 요소를 추출할 수 있습니다:
+
 `def hedgehog := woodlandCritters[0]
 def deer := woodlandCritters[1]
 def snail := woodlandCritters[2]`
 
 However, attempting to extract the fourth element results in a compile-time error, rather than a run-time error:
+
+그러나 네 번째 요소를 추출하려고 시도하면 런타임 오류가 아닌 컴파일 타임 오류가 발생합니다:
 
 `` def oops := failed to prove index is valid, possible solutions:
  - Use `have`-expressions to prove the index is valid
@@ -39,9 +48,18 @@ Out-of-bounds errors are a common class of bugs, and Lean uses its dual nature a
 
 Understanding how this works requires an understanding of three key ideas: propositions, proofs, and tactics.
 
+이 오류 메시지는 Lean이 `3 < woodlandCritters.length` (즉, `3 < List.length woodlandCritters`)를 자동으로 수학적으로 증명하려고 시도했지만 실패했다는 뜻입니다. 이것이 증명되었다면 조회 작업이 안전하다는 의미입니다.
+경계를 벗어난 오류는 흔한 버그 유형이며, Lean은 프로그래밍 언어와 정리 증명기라는 이중 성질을 활용하여 가능한 많은 오류를 미리 방지합니다.
+
+이 작동 원리를 이해하려면 세 가지 핵심 개념을 이해해야 합니다: 명제(proposition), 증명(proof), 그리고 전술(tactic)입니다.
+
 ## Propositions and Proofs[🔗](find/?domain=Verso.Genre.Manual.section&name=propositions-and-proofs "Permalink")
 
+## 명제와 증명
+
 A *proposition* is a statement that can be true or false.
+
+*명제*는 참이거나 거짓일 수 있는 진술입니다.
 All of the following English sentences are propositions:
 
 * `1 + 1 = 2`
@@ -58,12 +76,25 @@ Despite being grammatical, none of the following are propositions:
 Propositions come in two varieties: those that are purely mathematical, relying only on our definitions of concepts, and those that are facts about the world.
 Theorem provers like Lean are concerned with the former category, and have nothing to say about the flight capabilities of penguins or the legal status of cities.
 
+반면에 무의미한 진술은 명제가 아닙니다.
+문법적으로 올바르더라도 다음의 진술들은 명제가 아닙니다:
+
+명제는 두 가지 종류로 나뉩니다: 개념의 정의에만 의존하는 순수하게 수학적인 명제와 세계에 대한 사실들입니다.
+Lean과 같은 정리 증명기는 전자에만 관심이 있으며, 펭귄의 비행 능력이나 도시의 법적 지위에 대해서는 아무것도 말할 수 없습니다.
+
 A *proof* is a convincing argument that a proposition is true.
 For mathematical propositions, these arguments make use of the definitions of the concepts that are involved as well as the rules of logical argumentation.
 Most proofs are written for people to understand, and leave out many tedious details.
 Computer-aided theorem provers like Lean are designed to allow mathematicians to write proofs while omitting many details, and it is the software's responsibility to fill in the missing explicit steps.
 These steps can be mechanically checked.
 This decreases the likelihood of oversights or mistakes.
+
+*증명*은 명제가 참임을 보이는 설득력 있는 논증입니다.
+수학적 명제의 경우, 이러한 논증은 관련된 개념의 정의와 논리적 논증의 규칙을 활용합니다.
+대부분의 증명은 사람이 이해하도록 작성되며, 많은 지루한 세부 사항을 생략합니다.
+Lean과 같은 컴퓨터 보조 정리 증명기는 수학자가 많은 세부 사항을 생략하면서도 증명을 작성할 수 있도록 설계되었으며, 누락된 명시적 단계를 채우는 것은 소프트웨어의 책임입니다.
+이러한 단계들은 기계적으로 검증될 수 있습니다.
+이는 실수나 오류의 가능성을 줄입니다.
 
 In Lean, a program's type describes the ways it can be interacted with.
 For instance, a program of type `Nat → List String` is a function that takes a `Nat` argument and produces a list of strings.
@@ -74,14 +105,30 @@ They specify what counts as evidence that the statement is true.
 The proposition is proved by providing this evidence, which is checked by Lean.
 On the other hand, if the proposition is false, then it will be impossible to construct this evidence.
 
+Lean에서 프로그램의 타입은 프로그램과 상호작용할 수 있는 방식을 설명합니다.
+예를 들어, `Nat → List String` 타입의 프로그램은 `Nat` 인자를 받아 문자열 리스트를 생성하는 함수입니다.
+즉, 각 타입은 그 타입을 가진 프로그램이 무엇인지를 명시합니다.
+
+Lean에서 명제는 실제로 타입입니다.
+명제는 그 진술이 참임을 보이는 증거가 무엇인지를 명시합니다.
+명제는 이러한 증거를 제공함으로써 증명되며, Lean이 이를 검증합니다.
+반면, 명제가 거짓이라면 이러한 증거를 구성하는 것은 불가능할 것입니다.
+
 For example, the proposition `1 + 1 = 2` can be written directly in Lean.
 The evidence for this proposition is the constructor `rfl`, which is short for *reflexivity*.
 In mathematics, a relation is *reflexive* if every element is related to itself; this is a basic requirement in order to have a sensible notion of equality.
 Because `1 + 1` computes to `2`, they are really the same thing:
 
+예를 들어, 명제 `1 + 1 = 2`는 Lean에서 직접 작성할 수 있습니다.
+이 명제의 증거는 *reflexivity(반사성)*를 의미하는 `rfl` 생성자입니다.
+수학에서 관계는 모든 원소가 자기 자신과 관련된 경우 *반사적*입니다. 이는 합리적인 동등성 개념을 가지기 위한 기본 요구사항입니다.
+`1 + 1`이 `2`로 계산되므로, 이들은 실제로 같은 것입니다:
+
 `def onePlusOneIsTwo : 1 + 1 = 2 := rfl`
 
 On the other hand, `rfl` does not prove the false proposition `1 + 1 = 15`:
+
+반면, `rfl`은 거짓 명제인 `1 + 1 = 15`를 증명할 수 없습니다:
 
 `def Not a definitional equality: the left-hand side
 1 + 1
@@ -106,6 +153,10 @@ This error message indicates that `rfl` can prove that two expressions are equal
 Because `1 + 1` evaluates directly to `2`, they are considered to be the same, which allows `onePlusOneIsTwo` to be accepted.
 Just as `Type` describes types such as `Nat`, `String`, and `List (Nat × String × (Int → Float))` that represent data structures and functions, `Prop` describes propositions.
 
+이 오류 메시지는 `rfl`이 두 표현식이 같은 숫자일 때만 두 식이 같음을 증명할 수 있다는 뜻입니다.
+`1 + 1`이 직접 `2`로 평가되므로, 이들은 같은 것으로 간주되며, `onePlusOneIsTwo`가 수용됩니다.
+`Type`이 `Nat`, `String`, `List (Nat × String × (Int → Float))` 같은 데이터 구조와 함수를 나타내는 타입을 설명하듯이, `Prop`은 명제를 설명합니다.
+
 When a proposition has been proven, it is called a *theorem*.
 In Lean, it is conventional to declare theorems with the `theorem` keyword instead of `def`.
 This helps readers see which declarations are intended to be read as mathematical proofs, and which are definitions.
@@ -113,12 +164,23 @@ Generally speaking, with a proof, what matters is that there is evidence that a 
 With definitions, on the other hand, it matters very much which particular value is selected—after all, a definition of addition that always returns `0` is clearly wrong.
 Because the details of a proof don't matter for later proofs, using the `theorem` keyword enables greater parallelism in the Lean compiler.
 
+명제가 증명되었을 때, 그것을 *정리*라고 부릅니다.
+Lean에서는 `def` 대신 `theorem` 키워드로 정리를 선언하는 것이 관례입니다.
+이는 독자가 어떤 선언이 수학적 증명으로 읽혀야 하는지, 어떤 선언이 정의인지 구분할 수 있도록 도와줍니다.
+일반적으로 증명에서는 명제가 참임을 보이는 증거가 있다는 것이 중요하지만, *어떤* 증거가 제공되었는지는 특별히 중요하지 않습니다.
+반면 정의에서는 어떤 특정 값이 선택되는지가 매우 중요합니다. 항상 `0`을 반환하는 덧셈의 정의는 명백히 잘못되었기 때문입니다.
+증명의 세부 사항이 이후 증명에 중요하지 않기 때문에, `theorem` 키워드를 사용하면 Lean 컴파일러의 병렬 처리 가능성을 높입니다.
+
 The prior example could be rewritten as follows:
+
+위의 예제는 다음과 같이 다시 쓸 수 있습니다:
 
 `def OnePlusOneIsTwo : Prop := 1 + 1 = 2
 theorem onePlusOneIsTwo : OnePlusOneIsTwo := rfl`
 
 ## Tactics[🔗](find/?domain=Verso.Genre.Manual.section&name=tactics "Permalink")
+
+## 전술
 
 Proofs are normally written using *tactics*, rather than by providing evidence directly.
 Tactics are small programs that construct evidence for a proposition.
@@ -126,10 +188,21 @@ These programs run in a *proof state* that tracks the statement that is to be pr
 Running a tactic on a goal results in a new proof state that contains new goals.
 The proof is complete when all goals have been proven.
 
+증명은 보통 증거를 직접 제공하기보다는 *전술*을 사용하여 작성됩니다.
+전술은 명제의 증거를 구성하는 작은 프로그램입니다.
+이러한 프로그램들은 증명해야 할 진술(*목표*)과 이를 증명하는 데 사용할 수 있는 가정들을 추적하는 *증명 상태*에서 실행됩니다.
+목표에 전술을 실행하면 새로운 목표를 포함하는 새로운 증명 상태가 생성됩니다.
+모든 목표가 증명되었을 때 증명이 완성됩니다.
+
 To write a proof with tactics, begin the definition with `by`.
 Writing `by` puts Lean into tactic mode until the end of the next indented block.
 While in tactic mode, Lean provides ongoing feedback about the current proof state.
 Written with tactics, `onePlusOneIsTwo` is still quite short:
+
+전술을 사용하여 증명을 작성하려면 정의를 `by`로 시작합니다.
+`by`를 작성하면 Lean이 다음 들여쓰기된 블록의 끝까지 전술 모드로 전환됩니다.
+전술 모드에 있는 동안 Lean은 현재 증명 상태에 대해 지속적인 피드백을 제공합니다.
+전술로 작성된 `onePlusOneIsTwo`는 여전히 매우 짧습니다:
 
 `theorem onePlusOneIsTwo : 1 + 1 = 2 := by⊢ 1 + 1 = 2
 decideAll goals completed! 🐙`
@@ -138,14 +211,27 @@ The `decide` tactic invokes a *decision procedure*, which is a program that can 
 It is primarily used when working with concrete values like `1` and `2`.
 The other important tactics in this book are `simp`, short for “simplify,” and `grind`, which can automatically prove many theorems.
 
+`decide` 전술은 명제가 참인지 거짓인지를 확인할 수 있고 어느 경우든 적절한 증명을 반환하는 *결정 절차*를 호출합니다.
+주로 `1`과 `2` 같은 구체적인 값을 다룰 때 사용됩니다.
+이 책에서의 다른 중요한 전술은 “단순화”를 뜻하는 `simp`와 많은 정리를 자동으로 증명할 수 있는 `grind`입니다.
+
 Tactics are useful for a number of reasons:
 
 1. Many proofs are complicated and tedious when written out down to the smallest detail, and tactics can automate these uninteresting parts.
 2. Proofs written with tactics are easier to maintain over time, because flexible automation can paper over small changes to definitions.
 3. Because a single tactic can prove many different theorems, Lean can use tactics behind the scenes to free users from writing proofs by hand. For instance, an array lookup requires a proof that the index is in bounds, and a tactic can typically construct that proof without the user needing to worry about it.
 
+전술이 유용한 이유는 여러 가지입니다:
+
+1. 많은 증명은 가장 작은 세부 사항까지 작성할 때 복잡하고 지루하며, 전술은 이러한 지루한 부분을 자동화할 수 있습니다.
+2. 전술로 작성된 증명은 시간이 지남에 따라 유지보수가 더 쉽습니다. 유연한 자동화가 정의의 작은 변화를 보완할 수 있기 때문입니다.
+3. 하나의 전술이 많은 다양한 정리를 증명할 수 있으므로, Lean은 사용자를 수동으로 증명을 작성하는 것으로부터 해방시키기 위해 백그라운드에서 전술을 사용할 수 있습니다. 예를 들어, 배열 조회는 인덱스가 범위 내에 있다는 것을 증명해야 하며, 전술은 일반적으로 사용자가 걱정할 필요 없이 그 증명을 구성할 수 있습니다.
+
 Behind the scenes, indexing notation uses a tactic to prove that the user's lookup operation is safe.
 This tactic takes many facts about arithmetic into account, combining them with any locally-known facts to attempt to prove that the index is in bounds.
+
+백그라운드에서 인덱싱 표기법은 사용자의 조회 연산이 안전함을 증명하기 위해 전술을 사용합니다.
+이 전술은 산술에 대한 많은 사실을 고려하여 이를 지역적으로 알려진 사실과 결합하여 인덱스가 범위 내에 있음을 증명하려고 시도합니다.
 
 The `simp` tactic is a workhorse of Lean proofs.
 It rewrites the goal to as simple a form as possible.
@@ -158,7 +244,20 @@ Unlike `simp`, `grind` can never make progress towards a proof without completin
 The `grind` tactic is very powerful, customizable, and extensible; due to this power and flexibility, its output when it fails to prove a theorem contains a lot of information that can help trained Lean users diagnose the reason for the failure.
 This can be overwhelming in the beginning, so this chapter uses only `decide` and `simp`.
 
-## Connectives[🔗](find/?domain=Verso.Genre.Manual.section&name=connectives "Permalink")
+`simp` 전술은 Lean 증명의 주력입니다.
+목표를 가능한 한 단순한 형태로 다시 쓰입니다.
+많은 경우, 이러한 재작성은 명제를 자동으로 증명할 수 있을 정도로 단순화합니다.
+백그라운드에서 상세한 형식 증명이 구성되지만, `simp`를 사용하면 이 복잡성이 숨겨집니다.
+
+`decide`처럼, `grind` 전술도 증명을 완성하는 데 사용됩니다.
+다양한 정리를 증명할 수 있는 SMT solver의 기법들의 모음을 사용합니다.
+`simp`와 달리, `grind`는 완전히 완성하지 않고는 증명을 진행할 수 없습니다. 완전히 성공하거나 실패합니다.
+`grind` 전술은 매우 강력하고 커스터마이징 가능하며 확장 가능합니다. 이러한 강력함과 유연성 때문에, 정리를 증명하지 못했을 때의 출력은 훈련된 Lean 사용자가 실패 이유를 진단하는 데 도움이 될 수 있는 많은 정보를 포함합니다.
+처음에는 압도적일 수 있으므로, 이 장은 `decide`와 `simp`만 사용합니다.
+
+## Connectives[🔗](find/?domain=Verso.Genre.Manual.section&name=connectives “Permalink”)
+
+## 논리 연결자
 
 The basic building blocks of logic, such as “and”, “or”, “true”, “false”, and “not”, are called *logical connectives*.
 Each connective defines what counts as evidence of its truth.
@@ -166,11 +265,23 @@ For example, to prove a statement “*A* and *B*”, one must prove both *A* and
 This means that evidence for “*A* and *B*” is a pair that contains both evidence for *A* and evidence for *B*.
 Similarly, evidence for “*A* or *B*” consists of either evidence for *A* or evidence for *B*.
 
+논리의 기본 구성 요소인 “그리고”, “또는”, “참”, “거짓”, “부정”은 *논리 연결자*라고 불립니다.
+각 연결자는 그 진실의 증거가 무엇인지를 정의합니다.
+예를 들어, “*A* 그리고 *B*”라는 명제를 증명하려면 *A*와 *B* 모두를 증명해야 합니다.
+이는 “*A* 그리고 *B*”의 증거가 *A*의 증거와 *B*의 증거를 모두 포함하는 쌍이라는 의미입니다.
+마찬가지로, “*A* 또는 *B*”의 증거는 *A*의 증거 또는 *B*의 증거로 이루어집니다.
+
 In particular, most of these connectives are defined like datatypes, and they have constructors.
 If `A` and `B` are propositions, then “`A` and `B`” (written `A ∧ B`) is a proposition.
 Evidence for `A ∧ B` consists of the constructor `And.intro`, which has the type `A → B → A ∧ B`.
-Replacing `A` and `B` with concrete propositions, it is possible to prove `1 + 1 = 2 ∧ "Str".append "ing" = "String"` with `And.intro rfl rfl`.
+Replacing `A` and `B` with concrete propositions, it is possible to prove `1 + 1 = 2 ∧ “Str”.append “ing” = “String”` with `And.intro rfl rfl`.
 Of course, `decide` is also powerful enough to find this proof:
+
+특히, 이러한 연결자의 대부분은 데이터타입처럼 정의되며 생성자를 가집니다.
+`A`와 `B`가 명제이면, “`A` 그리고 `B`”(쓰임식 `A ∧ B`)도 명제입니다.
+`A ∧ B`의 증거는 `A → B → A ∧ B` 타입을 가지는 생성자 `And.intro`로 이루어집니다.
+`A`와 `B`를 구체적인 명제로 바꾸면, `And.intro rfl rfl`로 `1 + 1 = 2 ∧ “Str”.append “ing” = “String”`을 증명할 수 있습니다.
+당연히 `decide`도 이 증명을 찾을 수 있을 정도로 강력합니다:
 
 `theorem addAndAppend : 1 + 1 = 2 ∧ "Str".append "ing" = "String" := by⊢ 1 + 1 = 2 ∧ "Str".append "ing" = "String"
 decideAll goals completed! 🐙`
@@ -182,8 +293,18 @@ Implication (if `A` then `B`) is represented using functions.
 In particular, a function that transforms evidence for `A` into evidence for `B` is itself evidence that `A` implies `B`.
 This is different from the usual description of implication, in which `A → B` is shorthand for `¬A ∨ B`, but the two formulations are equivalent.
 
+마찬가지로, “`A` 또는 `B`”(쓰임식 `A ∨ B`)는 두 개의 생성자를 가집니다. “`A` 또는 `B`”의 증명은 두 개의 기저 명제 중 하나만 참이면 되기 때문입니다.
+두 개의 생성자가 있습니다: `A → A ∨ B` 타입의 `Or.inl`과 `B → A ∨ B` 타입의 `Or.inr`입니다.
+
+함축(만약 `A`이면 `B`)은 함수를 사용하여 표현됩니다.
+특히, `A`의 증거를 `B`의 증거로 변환하는 함수는 그 자체로 `A`가 `B`를 함축한다는 증거입니다.
+이는 `A → B`가 `¬A ∨ B`의 약자인 함축의 일반적인 설명과 다르지만, 두 형식은 동치입니다.
+
 Because evidence for an “and” is a constructor, it can be used with pattern matching.
 For instance, a proof that `A` and `B` implies `A` or `B` is a function that pulls the evidence of `A` (or of `B`) out of the evidence for `A` and `B`, and then uses this evidence to produce evidence of `A` or `B`:
+
+“그리고”의 증거는 생성자이므로 패턴 매칭과 함께 사용할 수 있습니다.
+예를 들어, `A` 그리고 `B`가 `A` 또는 `B`를 함축한다는 증명은 `A`와 `B`의 증거에서 `A`의 증거(또는 `B`의 증거)를 꺼내고, 이 증거를 사용하여 `A` 또는 `B`의 증거를 생성하는 함수입니다:
 
 `theorem andImpliesOr : A ∧ B → A ∨ B :=
 fun andEvidence =>
@@ -202,6 +323,9 @@ match andEvidence with
 The `decide` tactic can prove theorems that use these connectives.
 For example:
 
+`decide` 전술은 이러한 연결자를 사용하는 정리를 증명할 수 있습니다.
+예를 들어:
+
 `theorem onePlusOneOrLessThan : 1 + 1 = 2 ∨ 3 < 5 := by⊢ 1 + 1 = 2 ∨ 3 < 5 decideAll goals completed! 🐙
 theorem notTwoEqualFive : ¬(1 + 1 = 5) := by⊢ ¬1 + 1 = 5 decideAll goals completed! 🐙
 theorem trueIsTrue : True := by⊢ True decideAll goals completed! 🐙
@@ -210,10 +334,17 @@ theorem falseImpliesTrue : False → True := by⊢ False → True decideAll goal
 
 ## Evidence as Arguments[🔗](find/?domain=Verso.Genre.Manual.section&name=evidence-passing "Permalink")
 
+## 인자로서의 증거
+
 In some cases, safely indexing into a list requires that the list have some minimum size, but the list itself is a variable rather than a concrete value.
 For this lookup to be safe, there must be some evidence that the list is long enough.
 One of the easiest ways to make indexing safe is to have the function that performs a lookup into a data structure take the required evidence of safety as an argument.
 For instance, a function that returns the third entry in a list is not generally safe because lists might contain zero, one, or two entries:
+
+어떤 경우에는 리스트에 안전하게 인덱싱하려면 리스트가 최소한의 크기를 가져야 하지만, 리스트 자체는 구체적인 값이 아닌 변수입니다.
+이 조회가 안전하려면 리스트가 충분히 길다는 증거가 있어야 합니다.
+인덱싱을 안전하게 하는 가장 간단한 방법 중 하나는 데이터 구조로의 조회를 수행하는 함수가 필요한 안전성 증거를 인자로 가지도록 하는 것입니다.
+예를 들어, 리스트의 세 번째 항목을 반환하는 함수는 리스트가 0개, 1개, 또는 2개의 항목을 포함할 수 있으므로 일반적으로 안전하지 않습니다:
 
 `` def third (xs : List α) : α := failed to prove index is valid, possible solutions:
  - Use `have`-expressions to prove the index is valid
@@ -238,8 +369,18 @@ However, the obligation to show that the list has at least three entries can be 
 In this example, `xs.length > 2` is not a program that checks *whether* `xs` has more than 2 entries.
 It is a proposition that could be true or false, and the argument `ok` must be evidence that it is true.
 
+그러나 리스트가 최소한 3개의 항목을 가지고 있음을 보여야 할 의무를 인덱싱 작업이 안전함을 보이는 증거로 이루어진 인자를 추가하여 호출자에게 부과할 수 있습니다:
+
+`def third (xs : List α) (ok : xs.length > 2) : α := xs[2]`
+
+이 예제에서, `xs.length > 2`는 `xs`가 2개 이상의 항목을 가지고 있는지를 확인하는 프로그램이 아닙니다.
+이는 참이거나 거짓일 수 있는 명제이며, 인자 `ok`는 이것이 참임을 보이는 증거여야 합니다.
+
 When the function is called on a concrete list, its length is known.
 In these cases, `by decide` can construct the evidence automatically:
+
+함수가 구체적인 리스트에서 호출될 때, 그 길이는 알려져 있습니다.
+이 경우들에서, `by decide`가 자동으로 증거를 구성할 수 있습니다:
 
 `"snail"#eval third woodlandCritters (by⊢ woodlandCritters.length > 2 decideAll goals completed! 🐙)`
 
@@ -249,9 +390,15 @@ In these cases, `by decide` can construct the evidence automatically:
 
 ## Indexing Without Evidence[🔗](find/?domain=Verso.Genre.Manual.section&name=indexing-without-evidence "Permalink")
 
+## 증거 없는 인덱싱
+
 In cases where it's not practical to prove that an indexing operation is in bounds, there are other alternatives.
 Adding a question mark results in an `Option`, where the result is `some` if the index is in bounds, and `none` otherwise.
 For example:
+
+인덱싱 작업이 범위 내에 있음을 증명하는 것이 현실적이지 않은 경우, 다른 대안들이 있습니다.
+물음표를 추가하면 `Option`이 되며, 인덱스가 범위 내에 있으면 `some`을, 그렇지 않으면 `none`을 반환합니다.
+예를 들어:
 
 `def thirdOption (xs : List α) : Option α := xs[2]?``some "snail"#eval thirdOption woodlandCritters`
 
@@ -267,6 +414,8 @@ none
 
 There is also a version that crashes the program when the index is out of bounds, rather than returning an `Option`:
 
+`Option`을 반환하는 대신 인덱스가 범위를 벗어날 때 프로그램을 충돌시키는 버전도 있습니다:
+
 `"deer"#eval woodlandCritters[1]!`
 
 ```
@@ -275,8 +424,13 @@ There is also a version that crashes the program when the index is out of bounds
 
 ## Messages You May Meet[🔗](find/?domain=Verso.Genre.Manual.section&name=props-proofs-indexing-messages "Permalink")
 
+## 만날 수 있는 메시지들
+
 In addition to proving that a statement is true, the `decide` tactic can also prove that it is false.
 When asked to prove that a one-element list has more than two elements, it returns an error that indicates that the statement is indeed false:
+
+명제가 참임을 증명하는 것 외에도, `decide` 전술은 명제가 거짓임을 증명할 수도 있습니다.
+한 개의 원소를 가진 리스트가 두 개 이상의 원소를 가지고 있다고 증명하도록 요청하면, 그 명제가 실제로 거짓임을 나타내는 오류를 반환합니다:
 
 `` #eval third ["rabbit"] (by⊢ ["rabbit"].length > 2 Tactic `decide` proved that the proposition
 ["rabbit"].length > 2
@@ -294,6 +448,13 @@ Attempting to prove `OnePlusOneIsTwo` using `simp` fails:
 `` theorem onePlusOneIsStillTwo : OnePlusOneIsTwo := by⊢ OnePlusOneIsTwo `simp` made no progresssimp⊢ OnePlusOneIsTwo ``
 
 The error messages simply states that it could do nothing, because without unfolding `OnePlusOneIsTwo`, no progress can be made:
+
+`simp`과 `decide` 전술은 `def`로 정의된 정의를 자동으로 펼치지 않습니다.
+`simp`를 사용하여 `OnePlusOneIsTwo`를 증명하려고 시도하면 실패합니다:
+
+`` theorem onePlusOneIsStillTwo : OnePlusOneIsTwo := by⊢ OnePlusOneIsTwo `simp` made no progresssimp⊢ OnePlusOneIsTwo ``
+
+오류 메시지는 단순히 아무것도 할 수 없다고 말합니다. `OnePlusOneIsTwo`를 펼치지 않으면 진전이 없기 때문입니다:
 
 ```
 `simp` made no progress
@@ -317,6 +478,24 @@ Hint: Additional diagnostic information may be available using the `set_option d
 
 Defining `OnePlusOneIsTwo` with [`abbrev` fixes the problem](Getting-to-Know-Lean/Functions-and-Definitions/#abbrev-vs-def) by marking the definition for unfolding.
 
+`decide`를 사용해도 실패합니다:
+
+`` theorem onePlusOneIsStillTwo : OnePlusOneIsTwo := by⊢ OnePlusOneIsTwo failed to synthesize
+Decidable OnePlusOneIsTwo
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.decide⊢ OnePlusOneIsTwo ``
+
+이것도 `OnePlusOneIsTwo`를 펼치지 않기 때문입니다:
+
+```
+failed to synthesize
+  Decidable OnePlusOneIsTwo
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+```
+
+[`abbrev`로 `OnePlusOneIsTwo`를 정의하면 문제가 해결됩니다](Getting-to-Know-Lean/Functions-and-Definitions/#abbrev-vs-def). 펼치기 위해 정의를 표시합니다.
+
 In addition to the error that occurs when Lean is unable to find compile-time evidence that an indexing operation is safe, polymorphic functions that use unsafe indexing may produce the following message:
 
 `` def unsafeThird (xs : List α) : α := failed to synthesize
@@ -337,11 +516,37 @@ This is because a proposition in Lean is a kind of type that classifies evidence
 False propositions have no such evidence.
 If a program with an empty type could crash, then that crashing program could be used as a kind of fake evidence for a false proposition.
 
+Lean이 인덱싱 작업이 안전함을 나타내는 컴파일 타임 증거를 찾을 수 없을 때 발생하는 오류 외에도, 안전하지 않은 인덱싱을 사용하는 다형 함수는 다음 메시지를 생성할 수 있습니다:
+
+`` def unsafeThird (xs : List α) : α := failed to synthesize
+Inhabited α
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.xs[2]! ``
+
+```
+failed to synthesize
+  Inhabited α
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+```
+
+이는 Lean을 정리 증명을 위한 논리와 프로그래밍 언어로 모두 사용 가능하게 유지하는 기술적 제약입니다.
+특히, 타입이 최소한 하나의 값을 포함하는 프로그램만 충돌할 수 있습니다.
+이는 Lean의 명제가 그것의 진실에 대한 증거를 분류하는 일종의 타입이기 때문입니다.
+거짓 명제는 그러한 증거가 없습니다.
+빈 타입을 가진 프로그램이 충돌할 수 있다면, 그 충돌하는 프로그램을 거짓 명제에 대한 일종의 가짜 증거로 사용할 수 있었을 것입니다.
+
 Internally, Lean contains a table of types that are known to have at least one value.
 This error is saying that some arbitrary type `α` is not necessarily in that table.
 The next chapter describes how to add to this table, and how to successfully write functions like `unsafeThird`.
 
 Adding whitespace between a list and the brackets used for lookup can cause another message:
+
+내부적으로 Lean은 최소한 하나의 값을 가지는 것으로 알려진 타입들의 표를 포함합니다.
+이 오류는 임의의 타입 `α`가 반드시 그 표에 있지 않다고 말합니다.
+다음 장에서는 이 표에 추가하는 방법과 `unsafeThird` 같은 함수를 성공적으로 작성하는 방법을 설명합니다.
+
+리스트와 조회에 사용되는 대괄호 사이에 공백을 추가하면 다른 메시지가 발생할 수 있습니다:
 
 `#eval Function expected at
 woodlandCritters
@@ -364,8 +569,17 @@ Note: Expected a function because this term is being applied to the argument
 Adding a space causes Lean to treat the expression as a function application, and the index as a list that contains a single number.
 This error message results from having Lean attempt to treat `woodlandCritters` as a function.
 
+공백을 추가하면 Lean이 표현식을 함수 응용으로 취급하고 인덱스를 단일 숫자를 포함하는 리스트로 취급합니다.
+이 오류 메시지는 Lean이 `woodlandCritters`를 함수로 취급하려고 시도한 결과입니다.
+
 ### Exercises[🔗](find/?domain=Verso.Genre.Manual.section&name=props-proofs-indexing-exercises "Permalink")
+
+### 연습 문제
 
 * Prove the following theorems using `rfl`: `2 + 3 = 5`, `15 - 8 = 7`, `"Hello, ".append "world" = "Hello, world"`. What happens if `rfl` is used to prove `5 < 18`? Why?
 * Prove the following theorems using `by decide`: `2 + 3 = 5`, `15 - 8 = 7`, `"Hello, ".append "world" = "Hello, world"`, `5 < 18`.
 * Write a function that looks up the fifth entry in a list. Pass the evidence that this lookup is safe as an argument to the function.
+
+* `rfl`을 사용하여 다음 정리들을 증명하세요: `2 + 3 = 5`, `15 - 8 = 7`, `"Hello, ".append "world" = "Hello, world"`. `rfl`을 사용하여 `5 < 18`을 증명하려고 하면 어떻게 되나요? 왜인가요?
+* `by decide`를 사용하여 다음 정리들을 증명하세요: `2 + 3 = 5`, `15 - 8 = 7`, `"Hello, ".append "world" = "Hello, world"`, `5 < 18`.
+* 리스트의 다섯 번째 항목을 조회하는 함수를 작성하세요. 이 조회가 안전함을 보이는 증거를 함수의 인자로 전달하세요.
